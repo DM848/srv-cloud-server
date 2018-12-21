@@ -25,7 +25,7 @@ interface Jolie_Deployer_Interface
     RequestResponse:
       load(UserLoadRequest)(UserLoadResponse),
       unload(UserUnloadRequest)(void),
-      health(void)(undefined)
+      statusUserPrograms(string)(any)   //used to se the status of a users program
 }
 
 interface User_Service_Interface  //This is used by a user jolie service, to get the program

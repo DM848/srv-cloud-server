@@ -27,8 +27,10 @@ Interfaces: User_Service_Interface
 
 execution { sequential }
 
+
 init
 {
+    
     println@Console("Doing init")();
     exec@Exec("printenv TOKEN")(res);
     token = string(res);
@@ -51,7 +53,6 @@ init
 
 
     
-    
     user_program_name = "user_prog";
     filename = user_program_name + ".ol";
     writeFile@File( {
@@ -67,6 +68,7 @@ init
     } )( location );
 
     println@Console( "loaded service.")()
+    
 }
 
 
@@ -74,27 +76,14 @@ init
 main
 {
     
-    //LOAD is never called in the system, all this is done in init
-  [load( request )( response ) {
-    user_program_name = "user_prog";
-    filename = user_program_name + ".ol";
-    writeFile@File( {
-      .content = request.program,
-      .filename = filename
-    } )();
-    install( RuntimeException =>
-      println@Console( main.RuntimeException.stackTrace )()
-    );
-    loadEmbeddedService@Runtime( {
-      .type = "Jolie",
-      .filepath = filename
-    } )( location );
-
-    println@Console( "loaded service.")();
-    response = "service loaded"
-  }]
   
+  [status()(response){
+      stats@Runtime()(state);
+      response = "Available processors: " + state.os.availableProcessors + 
+                 ", System load average: " + state.os.systemLoadAverage
+  }
   
+  ]
   
   [ health() ( resp ) {
       resp = "Service alive and reachable"
