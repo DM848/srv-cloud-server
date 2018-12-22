@@ -80,8 +80,8 @@ init
 {
     println@Console("Initialising..")();
 
-    //downloadUserScript;
-    //loadUserScript;
+    downloadUserScript;
+    loadUserScript;
     configureServiceDefinition;
     registerService
 }
