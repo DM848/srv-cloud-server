@@ -1,0 +1,6 @@
+version: '3'
+
+services:
+  cloud-server:
+    build: .
+    image: dm848/srv-cloud-server:v1.1.0

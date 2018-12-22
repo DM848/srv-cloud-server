@@ -1,0 +1,14 @@
+{
+  "name": "cloud-server",
+  "tags": [
+    "unsafe",
+    "user-endpoint"
+  ],
+  "port": 8000,
+  "check": [
+    {
+      "HTTP": "http://MY_POD_IP:8000/health",
+      "Interval": "15s"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+.git
+.idea
+docker-compose.yaml
+docker-compose.yml
+README.md
+notes.md
+k8s.yaml
+k8s.yml
+Dockerfile

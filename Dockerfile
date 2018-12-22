@@ -1,20 +1,15 @@
-FROM jolielang/jolie:latest
-
+FROM dm848/cs-jolie:v3.1.0
 
 RUN apk update
-RUN apk add git
 RUN apk add bash
 RUN apk add curl
 
-#RUN git clone https://github.com/DM848/DM848-project.git
+# copy everything over
+COPY . .
 
-ADD cloud_server.ol .
-ADD cloud_server.iol .
-ADD jolie_deployer_interface.iol .
-ADD alive.sh .
-ADD service-mesh.iol .
+# Stop the container if we can't get a response from the health endpoint
+HEALTHCHECK CMD curl --fail http://localhost:8000/health || exit 1
 
-#WORKDIR DM848-project/src/embedding_jolie
-
-
-CMD ["jolie", "cloud_server.ol"]
+# open port 8000 & start program
+EXPOSE 8000:8000
+CMD ["jolie", "main.ol"]

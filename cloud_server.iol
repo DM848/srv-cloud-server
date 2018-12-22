@@ -4,7 +4,8 @@ type LoadRequest:void {
 
 interface CloudServerIface {
 RequestResponse:
-  status(void)(undefined)
+  status(void)(undefined),
+  health(void)(string)
 OneWay:
   unload(void)
 }

@@ -1,0 +1,22 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: cloud-server
+  namespace: default
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: cloud-server
+    spec:
+      containers:
+      - image: "dm848/srv-cloud-server:v1.1.0"
+        imagePullPolicy: Always
+        name: cloud-server
+        env:
+        - name: TOKEN
+          value: "fhjsdfjhsdf-anders-ok-yay"
+        ports:
+        - containerPort: 8000
