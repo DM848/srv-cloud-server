@@ -90,15 +90,16 @@ main
   }]
   
   
-  [unload()(answer){
+  [unload()]
+  {
       //TODO unregister service from consul
       
+      println@Console("Unloading my service")()
       //we could possibly stop the program here, but 
       //jolie documentation is so awful, I don't know 
       //how to do that. callExit@Runtime or halt@Runtime...
       
       
-      answer = "OK to undeploy me."
-      }]
+      }
 }
 
