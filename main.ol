@@ -24,10 +24,26 @@ execution { sequential }
 define configureServiceDefinition
 {
     getenv@Runtime("TOKEN")(token);
-    getenv@Runtime("USER_ID")(userID);
     exec@Exec("consulctl service --name=deployment" + token)();
     exec@Exec("consulctl service --add-tag=token:" + token)();
-    exec@Exec("consulctl service --add-tag=user_id:" + userID)()
+
+    // add a user id to this script.
+    // TODO: register deployment token to a userID in a database
+    getenv@Runtime("USER_ID")(userID);
+    exec@Exec("consulctl service --add-tag=user_id:" + userID)();
+
+    // health checking
+    getenv@Runtime("MY_POD_IP")(myIP);
+    if (myIP != "") {
+        exec@Exec("consulctl service --health-check=http://" + myIP + ":8000/health")()
+    }
+
+    // if the web port was specified, we allow this service to be accessible through the ACL entrypoint
+    getenv@Runtime("JOLIE_WEB_PORT")(port);
+    if (port != "") {
+        exec@Exec("consulctl service --add-tag=web_port:" + port)();
+        exec@Exec("consulctl service --add-tag=user-endpoint")()
+    }
 }
 
 define registerService

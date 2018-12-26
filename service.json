@@ -1,8 +1,7 @@
 {
   "name": "cloud-server",
   "tags": [
-    "unsafe",
-    "user-endpoint"
+    "unsafe"
   ],
   "port": 8000,
   "check": [

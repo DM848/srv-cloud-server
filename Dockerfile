@@ -1,4 +1,4 @@
-FROM dm848/cs-jolie:v3.1.0
+FROM dm848/cs-jolie:v3.2.0
 
 RUN apk update
 RUN apk add bash
@@ -10,6 +10,5 @@ COPY . .
 # Stop the container if we can't get a response from the health endpoint
 HEALTHCHECK CMD curl --fail http://localhost:8000/health || exit 1
 
-# open port 8000 & start program
-EXPOSE 8000:8000
+# k8s handles port exposure
 CMD ["jolie", "main.ol"]
