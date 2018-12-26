@@ -36,7 +36,7 @@ define configureServiceDefinition
     getenv@Runtime("MY_POD_IP")(myIP);
     if (myIP != "") {
         exec@Exec("consulctl service --health-check=http://" + myIP + ":8000/health")()
-    }
+    };
 
     // if the web port was specified, we allow this service to be accessible through the ACL entrypoint
     getenv@Runtime("JOLIE_WEB_PORT")(port);
