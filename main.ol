@@ -115,7 +115,7 @@ main
   }]
 
   [unload ()] {
-      //TODO unregister service from consul
+
       
       println@Console("Unloading my service")();
       //we could possibly stop the program here, but 
