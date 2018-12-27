@@ -1,4 +1,4 @@
-FROM dm848/cs-jolie:v3.2.0
+FROM dm848/cs-jolie:v3.3.0
 
 RUN apk update
 RUN apk add bash
