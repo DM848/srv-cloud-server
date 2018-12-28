@@ -21,40 +21,47 @@ outputPort Jolie_Deployer {
 
 execution { sequential }
 
-define configureServiceDefinition
+define configureSrvDef
 {
+    readFile@File({.filename="./srv.json5", .format="json"})(data);
+
     getenv@Runtime("TOKEN")(token);
-    exec@Exec("consulctl service --name=deployment" + token)();
-    exec@Exec("consulctl service --add-tag=token:" + token)();
-
-    // add a user id to this script.
-    // TODO: register deployment token to a userID in a database
-    getenv@Runtime("USER_ID")(userID);
-    exec@Exec("consulctl service --add-tag=user_id:" + userID)();
-
-    // health checking
-    getenv@Runtime("MY_POD_IP")(myIP);
-    if (myIP != "") {
-        exec@Exec("consulctl service --health-check=http://" + myIP + ":8000/health")()
-    };
+    data.jobs[0].name = "deployment" + token;
 
     // if the web port was specified, we allow this service to be accessible through the ACL entrypoint
-    getenv@Runtime("JOLIE_WEB_PORT")(port);
+    getenv@Runtime("JOLIE_WEB_PORT")(port); // assumed to be 8080
     if (port != "") {
-        exec@Exec("consulctl service --add-tag=web_port:" + port)();
-        exec@Exec("consulctl service --add-tag=user-endpoint")()
-    }
+        data.jobs[0].tags[1] = "user-endpoint"
+    };
+
+
+    println@Console( "writing service definition..")();
+    with( content ) {
+        .content << data;
+        .filename="srv-def.json5";
+        .format="json"
+    };
+    writeFile@File( content )();
+    println@Console( "created service definition")()
 }
 
 define registerService
 {
-    exec@Exec("consulctl service --register")()
+    println@Console( "registering service.." )();
+    exec@Exec("nohup /bin/containerpilot > cp-logs.json &")(res);
+    if (res == "") {
+        println@Console( "ok" )()
+    } else {
+        println@Console( res )();
+        println@Console( "error" )()
+    }
+    //exec@Exec("consulctl service --register")()
 }
 
-define deregisterService
-{
-    exec@Exec("consulctl service --deregister")()
-}
+//define deregisterService
+//{
+    //exec@Exec("consulctl service --deregister")()
+//}
 
 define downloadUserScript
 {
@@ -97,9 +104,9 @@ init
     println@Console("Initialising..")();
 
     downloadUserScript;
-    loadUserScript;
-    configureServiceDefinition;
-    registerService
+    loadUserScript
+    //configureSrvDef;
+    //registerService
 }
 
 main
@@ -117,12 +124,12 @@ main
   [unload ()] {
 
       
-      println@Console("Unloading my service")();
+      println@Console("Unloading my service")()
       //we could possibly stop the program here, but 
       //jolie documentation is so awful, I don't know 
       //how to do that. callExit@Runtime or halt@Runtime...
       
-      deregisterService
+      //deregisterService
   }
 }
 

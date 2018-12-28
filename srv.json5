@@ -1,0 +1,38 @@
+{
+  consul: "consul-node:8500",
+  logging: {
+    level: "DEBUG",
+    format: "text",
+    output: "stdout"
+  },
+  jobs: [
+    {
+      name: "appname",
+      exec: "jolie main.ol",
+      restarts: "unlimited",
+      port: 8000,
+      health: {
+        exec: [
+          "/usr/bin/curl",
+          "--fail",
+          "-s",
+          "http://localhost:8000/health"
+        ],
+        interval: 5,
+        ttl: 10,
+        timeout: "10s",
+      },
+      tags: [
+        "unsafe",
+        "user-endpoint"
+      ],
+      logging: {
+        raw: true
+      },
+      consul: {
+        enableTagOverride: true,
+        deregisterCriticalServiceAfter: "10m"
+      }
+    }
+  ]
+}
